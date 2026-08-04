@@ -1,0 +1,2 @@
+[functions.create-supplier-account]
+verify_jwt = false
