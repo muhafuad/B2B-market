@@ -134,12 +134,12 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Boxes className="h-5 w-5" />
+        <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-2 px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <Boxes className="h-4 w-4 sm:h-5 sm:w-5" />
             </div>
-            <span className="text-xl font-bold tracking-tight">{t('brand.name')}</span>
+            <span className="max-w-30 truncate text-lg font-bold tracking-tight sm:max-w-none sm:text-xl"> {t('brand.name')}</span>
           </div>
           <nav className="hidden items-center gap-8 md:flex">
             <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
@@ -155,7 +155,7 @@ export default function LandingPage() {
               {t('nav.howItWorks')}
             </a>
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             {mounted && (
               <Button
                 variant="ghost"
@@ -167,14 +167,26 @@ export default function LandingPage() {
               </Button>
             )}
             <LanguageSwitcher />
+           <div className="hidden sm:flex items-center gap-2">
             <Link href="/login">
-              <Button variant="ghost" size="sm">{t('nav.signIn')}</Button>
-            </Link>
-            <Link href="/register">
-              <Button size="sm" className="gap-1">
-                {t('nav.getStarted')} <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
+            <Button variant="ghost" size="sm">
+              {t('nav.signIn')}
+           </Button>
+          </Link>
+
+         <Link href="/register">
+           <Button size="sm" className="gap-1">
+             {t('nav.getStarted')}
+          <ArrowRight className="h-4 w-4" />
+           </Button>
+          </Link>
+           </div>
+
+            <Link href="/register" className="sm:hidden">
+             <Button size="sm">
+              {t('nav.getStarted')}
+            </Button>
+           </Link>
           </div>
         </div>
       </header>
@@ -184,19 +196,19 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10" />
         <div className="absolute -top-24 right-0 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute -bottom-24 left-0 h-96 w-96 rounded-full bg-chart-2/10 blur-3xl" />
-        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-20 lg:px-8 lg:py-28">
           <div className="mx-auto max-w-3xl text-center">
             <Badge variant="secondary" className="mb-4 gap-1.5 py-1.5">
               <Zap className="h-3.5 w-3.5 text-primary" />
               {t('hero.badge')}
             </Badge>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+           <h1 className="text-2xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
               {t('hero.title1')}{' '}
               <span className="bg-gradient-to-r from-primary to-chart-4 bg-clip-text text-transparent">
                 {t('hero.titleHighlight')}
               </span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg">
               {t('hero.subtitle')}
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -214,10 +226,10 @@ export default function LandingPage() {
           </div>
 
           {/* Stats */}
-          <div className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {statisticCards.map((stat) => (
               <Card key={stat.label} className="border-border/40 bg-card/50 backdrop-blur-sm">
-                <CardContent className="flex items-center gap-3 p-4">
+                <CardContent className="flex items-center gap-3 p-3 sm:p-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                     <stat.icon className="h-5 w-5 text-primary" />
                   </div>
@@ -233,7 +245,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section id="features" className="border-b border-border/40 py-20">
+      <section id="features" className="border-b border-border/40 py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -246,11 +258,11 @@ export default function LandingPage() {
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature) => (
               <Card key={feature.title} className="group border-border/40 transition-shadow hover:shadow-lg">
-                <CardContent className="p-6">
+                <CardContent className="p-5 sm:p-6">
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
                     <feature.icon className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="mb-2 text-lg font-semibold">{feature.title}</h3>
+                  <h3 className="mb-2 text-base font-semibold sm:text-lg">{feature.title}</h3>
                   <p className="text-sm text-muted-foreground">{feature.desc}</p>
                 </CardContent>
               </Card>
@@ -260,7 +272,7 @@ export default function LandingPage() {
       </section>
 
       {/* Categories */}
-      <section id="categories" className="border-b border-border/40 bg-muted/30 py-20">
+      <section id="categories" className="border-b border-border/40 bg-muted/30 py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('categories.title')}</h2>
@@ -272,7 +284,7 @@ export default function LandingPage() {
             {categories.map((cat) => (
               <Link key={cat.id} href={`/products?category=${cat.slug}`}>
                 <Card className="group h-full border-border/40 transition-all hover:border-primary/40 hover:shadow-md">
-                  <CardContent className="flex flex-col items-center p-6 text-center">
+                  <CardContent className="flex flex-col items-center p-4 text-center sm:p-6">
                     <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/5 transition-colors group-hover:bg-primary/10">
                       <Boxes className="h-7 w-7 text-primary" />
                     </div>
@@ -287,20 +299,20 @@ export default function LandingPage() {
       </section>
 
       {/* Featured Products */}
-      <section id="products" className="border-b border-border/40 py-20">
+      <section id="products" className="border-b border-border/40 py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('featured.title')}</h2>
               <p className="mt-4 text-muted-foreground">{t('featured.subtitle')}</p>
             </div>
-            <Link href="/products" className="hidden sm:block">
+            <Link href="/products" className="mt-4 sm:mt-0">
               <Button variant="outline" className="gap-2">
                 {t('featured.viewAll')} <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
           </div>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid gap-4 sm:mt-12 sm:grid-cols-2 lg:grid-cols-4">
             {featuredProducts.map((product) => (
               <Link key={product.id} href={`/products/${product.slug}`}>
                 <Card className="group h-full overflow-hidden border-border/40 transition-all hover:shadow-lg">
@@ -333,13 +345,13 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="border-b border-border/40 bg-muted/30 py-20">
+      <section id="how-it-works" className="border-b border-border/40 bg-muted/30 py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('howItWorks.title')}</h2>
             <p className="mt-4 text-muted-foreground">{t('howItWorks.subtitle')}</p>
           </div>
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
+          <div className="mt-8 grid gap-8 sm:mt-12 md:grid-cols-3">
             {steps.map((item) => (
               <div key={item.step} className="relative">
                 <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary text-primary-foreground">
@@ -355,10 +367,10 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20">
+      <section className="py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Card className="overflow-hidden border-0 bg-gradient-to-br from-primary to-chart-4">
-            <CardContent className="relative p-12 text-center">
+            <CardContent className="relative p-6 text-center sm:p-12">
               <div className="absolute -top-12 -right-12 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
               <div className="absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
               <div className="relative">
@@ -382,7 +394,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-border/40 py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-8 md:grid-cols-4">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
