@@ -255,7 +255,7 @@ export default function MessagesPage() {
         }
       />
 
-      <div className="flex h-[calc(100vh-12rem)] gap-4 overflow-hidden">
+      <div className="flex h-[calc(100dvh-12rem)] gap-4 overflow-hidden">
         {/* Thread List */}
         <div
           className={`${
@@ -356,7 +356,7 @@ export default function MessagesPage() {
 
         {/* Conversation View */}
         {selectedThread ? (
-          <div className="hidden flex-1 flex-col md:flex">
+          <div className={`${selectedThread ? 'flex' : 'hidden'} flex-1 flex-col md:flex` }>
             <Card className="flex flex-1 flex-col overflow-hidden border-border/40">
               {/* Header */}
               <div className="flex items-center justify-between border-b border-border/40 p-4">
@@ -390,7 +390,7 @@ export default function MessagesPage() {
                       className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
-                        className={`max-w-[75%] rounded-lg p-3 ${
+                        className={`max-w-[90%] md:max-w-[75%] rounded-lg p-3 ${
                           isMe
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-muted text-foreground'
@@ -412,7 +412,7 @@ export default function MessagesPage() {
 
               {/* Reply */}
               <div className="border-t border-border/40 p-4">
-                <div className="flex gap-2">
+                <div className="flex items-end gap-2"> 
                   <Textarea
                     placeholder="Type your reply..."
                     value={replyText}
@@ -429,7 +429,7 @@ export default function MessagesPage() {
                   <Button
                     onClick={handleSendReply}
                     disabled={sending || !replyText.trim()}
-                    className="self-end gap-2"
+                    className="h-10 w-10 shrink-0"
                   >
                     {sending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
