@@ -11,6 +11,8 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   metadataBase: new URL('https://hidaya-market.vercel.app'),
 
+
+
   title: {
     default: 'Hidaya B2B Market — Ethiopian Distribution Marketplace',
     template: '%s | Hidaya B2B Market',
@@ -18,6 +20,10 @@ export const metadata: Metadata = {
 
   description:
     'A B2B supplier and distribution marketplace connecting Ethiopian manufacturers, suppliers, and retailers.',
+
+    verification: {
+  google: 'Abq67SD7V-UZWKkIxdOvJPFGv7Xxw7hNnAxU4gcfoc8',
+},
 
   keywords: [
     'Hidaya Market',
