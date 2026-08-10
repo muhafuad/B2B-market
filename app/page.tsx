@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
@@ -425,9 +426,9 @@ export default function LandingPage() {
             <div>
               <h4 className="font-semibold">{t('nav.contact')}</h4>
               <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-                <li>contact@hidayab2b.com</li>
-                <li>+251 11 552 0203</li>
-                <li>Bole Road, Addis Ababa, Ethiopia</li>
+                <li>eredwan968@gmail.com</li>
+                <li>+251985908973</li>
+                <li>Addis Ababa, Ethiopia</li>
               </ul>
             </div>
           </div>
