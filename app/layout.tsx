@@ -17,6 +17,9 @@ export const metadata: Metadata = {
     default: 'Hidaya B2B Market — Ethiopian Industrial Supply & Distribution Marketplace',
     template: '%s | Hidaya B2B Market',
   },
+    verification: {
+  google: 'Abq67SD7V-UZWKkIxdOvJPFGv7Xxw7hNnAxU4gcfoc8',
+},
   description:
     'Hidaya B2B Market connects Ethiopian manufacturers, suppliers, and retailers. Browse 12,000+ industrial products, manage purchase orders, track deliveries, and streamline your supply chain — all in one platform.',
   keywords: [
