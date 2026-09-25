@@ -16,6 +16,9 @@ import {
   CheckCircle2,
   MapPin,
   User,
+  Upload,
+  FileText,
+  X,
 } from 'lucide-react';
 import { DashboardShell } from '@/app/components/dashboard/dashboard-shell';
 import { PageHeader } from '@/app/components/dashboard/page-header';
@@ -33,16 +36,32 @@ import { useCart } from '@/app/hooks/use-cart';
 import { useAuth } from '@/app/components/providers/auth-provider';
 import { supabase } from '@/app/lib/supabase/client';
 import { toast } from 'sonner';
+import { Building2, Copy } from 'lucide-react';
 
 const SHIPPING_RATE = 0.05;
 const TAX_RATE = 0.1;
 
 const PAYMENT_METHODS: { value: PaymentMethod; label: string; icon: typeof CreditCard; description: string }[] = [
   { value: 'bank_transfer', label: 'Bank Transfer', icon: CreditCard, description: 'Transfer funds directly to our bank account' },
-  { value: 'mobile_money', label: 'Mobile Money', icon: Smartphone, description: 'Pay via MTN, Airtel, or other mobile money' },
+  { value: 'mobile_money', label: 'Mobile Money', icon: Smartphone, description: 'Pay via Telebirr or other mobile money' },
   { value: 'cash', label: 'Cash on Delivery', icon: Banknote, description: 'Pay with cash when your order arrives' },
   { value: 'credit', label: 'Credit', icon: Wallet, description: 'Use your approved credit line' },
 ];
+
+const ownerBankAccounts = [
+  { bank: 'Commercial Bank of Ethiopia (CBE)', account: '1000488606461', type: 'bank' as const },
+  { bank: 'Telebirr', account: '0960387264', type: 'mobile' as const },
+  { bank: 'Bank of Abyssinia (BOA)', account: '159430375', type: 'bank' as const },
+  { bank: 'Awash Bank', account: '014251218532500', type: 'bank' as const },
+  { bank: 'Cooperative Bank of Oromia', account: '1033000054649', type: 'bank' as const },
+  { bank: 'Oromia International Bank', account: '1651667500001', type: 'bank' as const },
+  { bank: 'Wegagen Bank', account: '0754667235101', type: 'bank' as const },
+];
+
+const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text);
+  toast.success('Account number copied');
+};
 
 interface AddressForm {
   full_name: string;
@@ -74,6 +93,8 @@ export default function CheckoutPage() {
   });
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('bank_transfer');
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [uploadingReceipt, setUploadingReceipt] = useState(false);
 
   useEffect(() => {
     setHydrated(true);
@@ -119,6 +140,19 @@ export default function CheckoutPage() {
       return false;
     }
     return true;
+  };
+
+  const uploadReceipt = async (paymentId: string): Promise<string | null> => {
+    if (!receiptFile) return null;
+    const fileExt = receiptFile.name.split('.').pop();
+    const fileName = `receipts/${paymentId}-${Date.now()}.${fileExt}`;
+    const { error } = await supabase.storage.from('receipts').upload(fileName, receiptFile);
+    if (error) {
+      console.error(error);
+      return null;
+    }
+    const { data: urlData } = supabase.storage.from('receipts').getPublicUrl(fileName);
+    return urlData.publicUrl;
   };
 
   const placeOrder = async () => {
@@ -187,21 +221,30 @@ export default function CheckoutPage() {
 
       // Create payment record
       const paymentReference = `PAY-${Date.now().toString().slice(-10)}`;
-      const { error: paymentError } = await supabase.from('payments').insert({
+      const { data: paymentRec, error: paymentError } = await supabase.from('payments').insert({
         order_id: order.id,
         amount: total,
         method: paymentMethod,
         status: 'pending',
         reference: paymentReference,
-      });
+      }).select().single();
 
       if (paymentError) {
         console.error(paymentError);
         // Don't fail the whole order for payment record error
+      } else if (receiptFile && paymentRec) {
+        // Upload receipt and update payment record
+        setUploadingReceipt(true);
+        const receiptUrl = await uploadReceipt(paymentRec.id);
+        setUploadingReceipt(false);
+        if (receiptUrl) {
+          await supabase.from('payments').update({ receipt_url: receiptUrl }).eq('id', paymentRec.id);
+        }
       }
 
       // Clear cart
       clearCart();
+      setReceiptFile(null);
 
       toast.success('Order placed successfully!');
       router.push('/shop/orders');
@@ -401,6 +444,43 @@ export default function CheckoutPage() {
                   </button>
                 ))}
               </div>
+
+              {(paymentMethod === 'bank_transfer' || paymentMethod === 'mobile_money') && (
+                <div className="mt-4 rounded-lg border border-border/40 bg-muted/30 p-4">
+                  <div className="mb-3 flex items-center gap-2">
+                    <Building2 className="h-4 w-4 text-primary" />
+                    <h4 className="text-sm font-semibold">Owner Bank Accounts</h4>
+                  </div>
+                  <p className="mb-3 text-xs text-muted-foreground">
+                    {paymentMethod === 'bank_transfer'
+                      ? 'Transfer the total amount to one of our bank accounts below, then upload your receipt.'
+                      : 'Send the total amount to our Telebirr account below, then upload your receipt.'}
+                  </p>
+                  <div className="space-y-2">
+                    {(paymentMethod === 'bank_transfer'
+                      ? ownerBankAccounts.filter((a) => a.type === 'bank')
+                      : ownerBankAccounts.filter((a) => a.type === 'mobile')
+                    ).map((acc) => (
+                      <div
+                        key={acc.bank}
+                        className="flex items-center justify-between gap-3 rounded-md border border-border/30 bg-background/50 px-3 py-2"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-xs font-medium">{acc.bank}</p>
+                          <p className="font-mono text-sm font-semibold tracking-wide">{acc.account}</p>
+                        </div>
+                        <button
+                          onClick={() => copyToClipboard(acc.account)}
+                          className="shrink-0 rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          title="Copy account number"
+                        >
+                          <Copy className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -484,10 +564,10 @@ export default function CheckoutPage() {
                 className="w-full gap-2"
                 size="lg"
               >
-                {placing ? (
+                {placing || uploadingReceipt ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Placing Order...
+                    {uploadingReceipt ? 'Uploading receipt...' : 'Placing Order...'}
                   </>
                 ) : (
                   <>
