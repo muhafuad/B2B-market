@@ -20,7 +20,7 @@ import {
   FileText,
   X,
 } from 'lucide-react';
-import { DashboardShell } from '@/app/components/dashboard/dashboard-shell';
+import { DashboardShell } from "@/app/components/dashboard/dashboard-shell";
 import { PageHeader } from '@/app/components/dashboard/page-header';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
@@ -446,6 +446,7 @@ export default function CheckoutPage() {
               </div>
 
               {(paymentMethod === 'bank_transfer' || paymentMethod === 'mobile_money') && (
+                <>
                 <div className="mt-4 rounded-lg border border-border/40 bg-muted/30 p-4">
                   <div className="mb-3 flex items-center gap-2">
                     <Building2 className="h-4 w-4 text-primary" />
@@ -480,6 +481,57 @@ export default function CheckoutPage() {
                     ))}
                   </div>
                 </div>
+
+                {/* Receipt upload */}
+                <div className="mt-4">
+                  <Label className="mb-2 block text-sm font-medium">Payment Receipt</Label>
+                  <p className="mb-3 text-xs text-muted-foreground">
+                    Upload a screenshot or photo of your transfer confirmation. This helps us verify your payment faster.
+                  </p>
+                  {receiptFile ? (
+                    <div className="flex items-center justify-between gap-3 rounded-lg border border-border/40 bg-muted/30 p-3">
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <FileText className="h-5 w-5 shrink-0 text-primary" />
+                        <span className="truncate text-sm font-medium">{receiptFile.name}</span>
+                        <span className="shrink-0 text-xs text-muted-foreground">
+                          ({(receiptFile.size / 1024).toFixed(0)} KB)
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => setReceiptFile(null)}
+                        className="shrink-0 rounded-md p-1 text-muted-foreground transition-colors hover:bg-background hover:text-destructive"
+                        title="Remove receipt"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label
+                      htmlFor="receipt-upload"
+                      className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border/60 bg-muted/20 p-6 text-center transition-colors hover:border-primary/50 hover:bg-muted/30"
+                    >
+                      <Upload className="h-8 w-8 text-muted-foreground" />
+                      <span className="text-sm font-medium">Click to upload receipt</span>
+                      <span className="text-xs text-muted-foreground">PNG, JPG, or PDF · Max 5MB</span>
+                      <input
+                        id="receipt-upload"
+                        type="file"
+                        accept="image/*,application/pdf"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          if (file.size > 5 * 1024 * 1024) {
+                            toast.error('File too large. Maximum 5MB.');
+                            return;
+                          }
+                          setReceiptFile(file);
+                        }}
+                      />
+                    </label>
+                  )}
+                </div>
+                </>
               )}
             </CardContent>
           </Card>
